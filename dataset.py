@@ -17,6 +17,11 @@ class Bee_Dataset(data.Dataset):
         self.df = pd.read_csv(csv_dir)
         #print(self.df.loc[:,'file'])
         print(self.df.subspecies.unique())
+        # >>> df.health.unique()
+        # array(['hive being robbed', 'healthy', 'few varrao, hive beetles',
+        #     'ant problems', 'missing queen', 'Varroa, Small Hive Beetles'],
+        #     dtype=object)
+
 
     def __getitem__(self, index):
 
@@ -38,10 +43,24 @@ class Bee_Dataset(data.Dataset):
         elif self.df.loc[index,'subspecies'] == 'Western honey bee':
             subspecies = 6
 
-            
+        if self.df.loc[index,'health'] == 'healthy':
+            health = 0
+        elif self.df.loc[index,'health'] == 'hive being robbed': 
+            health = 1
+        elif self.df.loc[index,'health'] == 'few varrao, hive beetles':
+            health = 2  
+        elif self.df.loc[index,'health'] == 'ant problems' :
+            health = 3     
+        elif self.df.loc[index,'health'] == 'missing queen':
+            health = 4
+        elif self.df.loc[index,'health'] == 'Varroa, Small Hive Beetles': 
+            health = 5
+
+        
+
         img = load_img(os.path.join(self.img_dir,filename))
 
-        sample = {'image':img, 'subspecies':subspecies}
+        sample = {'image':img, 'subspecies':subspecies,'health':health}
         #Some pytorch loss function doesn't need one-hot
 
         return sample
